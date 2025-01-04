@@ -13,8 +13,7 @@ export const Router = () => {
 
   useEffect(() => {
     if (user.userId > 0) {
-      axios.get(BaseUrl + "getCategoria").then((res) => {
-        console.log("Categoria call" + res.data.result);
+      axios.get(BaseUrl + "getCategorias").then((res) => {
         addCategorias(res.data.result);
       });
     }

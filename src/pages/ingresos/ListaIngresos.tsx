@@ -2,21 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
-import { useAppSelector } from "../../hooks/store";
 import { FormatMoneyUSD } from "../../services/FormatMoney";
 import {
-  GastosType,
+  IngresoType,
   FormState,
-  ListaGastosProps,
   TableParams,
+  ListaIngresosProps,
 } from "../../services/interfaces";
 
-import { CategoriaFormat } from "../../services/CategoriaFormat";
+import { CategoriaIngresos } from "../../services/Constants";
+import { IngresoFormat } from "../../services/IngresoFormat";
 
-export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
-  const [data, setData] = useState<GastosType[]>([]);
+export const ListaIngresos: React.FC<ListaIngresosProps> = ({
+  reloadIngresos,
+}) => {
+  const [data, setData] = useState<IngresoType[]>([]);
   const [loading, setLoading] = useState(false);
-  const categorias: any = useAppSelector((state) => state.categorias);
   const [form, _] = useState<FormState>({});
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -26,7 +27,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
   });
 
   const reloadParams = [
-    reloadGastos,
+    reloadIngresos,
     tableParams.pagination.current,
     tableParams.pagination.pageSize,
     tableParams.sortOrder,
@@ -40,7 +41,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
 
   const fetchData = () => {
     setLoading(true);
-    const baseUrl = `${BaseUrl}getGastos`;
+    const baseUrl = `${BaseUrl}getIngresos`;
 
     const params = {
       montoMin: form.montoMin,
@@ -72,10 +73,6 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
     });
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
     setTableParams({
       pagination,
@@ -91,27 +88,22 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
 
   const columns = [
     {
-      title: "Nombre",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
       title: "Monto",
       dataIndex: "monto",
       key: "monto",
       render: (text: number) => (text ? FormatMoneyUSD(text) : "N/A"),
     },
     {
-      title: "Categoría",
-      key: "categoria",
-      render: (_: any, record: GastosType) => {
-        const categoria = categorias.find(
-          (cat: any) => cat.categoriaId === record.categoriaId
+      title: "Tipo",
+      key: "type",
+      render: (_: any, record: IngresoType) => {
+        const categoria = CategoriaIngresos.find(
+          (cat: any) => cat === record.type
         );
 
         if (!categoria) return "N/A";
 
-        let { icon, color } = CategoriaFormat(categoria);
+        let { icon, color } = IngresoFormat(categoria);
 
         return (
           <Tag
@@ -126,7 +118,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
               fontSize: "16px",
             }}
           >
-            {categoria.name}
+            {categoria}
           </Tag>
         );
       },
@@ -137,17 +129,6 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
       dataIndex: "fechaEfectuado",
       key: "fechaEfectuado",
       render: (text: string) => new Date(text).toLocaleDateString(), // Ajusta el formato de fecha según necesites
-    },
-    {
-      title: "Notas",
-      dataIndex: "notes",
-      key: "notes",
-    },
-    {
-      title: "Pagado",
-      dataIndex: "pagado",
-      key: "pagado",
-      render: (text: boolean) => (text ? "Sí" : "No"),
     },
   ];
 

@@ -1,48 +1,47 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Col,
-  DatePicker,
   Form,
-  Input,
-  InputNumber,
+  Select,
   notification,
   Row,
-  Select,
-  Switch,
   Spin,
+  InputNumber,
+  DatePicker,
 } from "antd";
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
-import { useAppSelector } from "../../hooks/store";
+import { useCategoriaActions } from "../../hooks/useCategoriaActions";
+import { CategoriaIngresos } from "../../services/Constants";
 
 interface FormValues {
-  nombreGasto: string;
-  montoGasto: number;
-  categoriaGasto: string;
-  fechaPago?: Date;
-  pagado: boolean;
+  monto: number;
+  type: string;
+  fecha?: Date;
 }
 
-interface AddGastoProps {
-  setReloadGastos: React.Dispatch<React.SetStateAction<number>>;
+interface AddIngresoProps {
+  setReloadIngresos: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
+export const AddIngreso: React.FC<AddIngresoProps> = ({
+  setReloadIngresos,
+}) => {
+  const { addCategorias } = useCategoriaActions();
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false); // Estado para el loader
-  const categorias: any = useAppSelector((state) => state.categorias);
 
   const onFinish = (values: FormValues) => {
     setLoading(true); // Mostrar loader
     axios
-      .post(BaseUrl + "addGasto", values)
+      .post(BaseUrl + "addIngreso", values)
       .then(() => {
         const now = new Date();
-        setReloadGastos(now.getTime());
+        setReloadIngresos(now.getTime());
         api.open({
-          message: "Gasto Agregado",
+          message: "Ingreso Agregado",
           type: "success",
           duration: 5,
           placement: "top",
@@ -52,7 +51,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
       })
       .catch(() => {
         api.open({
-          message: "Error al agregar el gasto",
+          message: "Error al agregar el ingreso",
           type: "error",
           duration: 5,
           placement: "top",
@@ -60,7 +59,12 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
         });
       })
       .finally(() => {
-        setLoading(false);
+        axios
+          .get(BaseUrl + "getIngresos")
+          .then((res) => {
+            addCategorias(res.data.result);
+          })
+          .finally(() => setLoading(false));
       });
   };
 
@@ -70,28 +74,14 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
       <Spin spinning={loading}>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Row gutter={16} wrap={true} justify="start">
-            <Col style={{ minWidth: 200, width: "400px" }}>
-              <Form.Item
-                label="Nombre del gasto"
-                name="nombreGasto"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor, ingrese el nombre del gasto",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
             <Col style={{ minWidth: 200 }}>
               <Form.Item
-                label="Monto del gasto"
-                name="montoGasto"
+                label="Monto"
+                name="monto"
                 rules={[
                   {
                     required: true,
-                    message: "Por favor, ingrese el monto del gasto",
+                    message: "Por favor, ingrese el monto del ingreso",
                   },
                   {
                     type: "number",
@@ -122,38 +112,27 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
             </Col>
             <Col style={{ minWidth: 200 }}>
               <Form.Item
-                label="Categoria del gasto"
-                name="categoriaGasto"
+                label="Tipo"
+                name="type"
                 rules={[
                   {
                     required: true,
-                    message: "Por favor, seleccione una categoría",
+                    message: "Por favor, seleccione un tipo",
                   },
                 ]}
               >
                 <Select>
-                  {categorias.map((categoria: any) => (
-                    <Select.Option
-                      key={categoria.categoriaId}
-                      value={categoria.categoriaId}
-                    >
-                      {categoria.name}
+                  {CategoriaIngresos.map((Categoria: any) => (
+                    <Select.Option key={Categoria} value={Categoria}>
+                      {Categoria}
                     </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
             <Col style={{ minWidth: 200 }}>
-              <Form.Item
-                label="Fecha en que se efectuó el pago (opcional)"
-                name="fechaPago"
-              >
+              <Form.Item label="Fecha" name="fecha">
                 <DatePicker style={{ width: "100%" }} />
-              </Form.Item>
-            </Col>
-            <Col style={{ minWidth: 200 }}>
-              <Form.Item label="Pagado?" name="pagado" valuePropName="checked">
-                <Switch />
               </Form.Item>
             </Col>
             <Col

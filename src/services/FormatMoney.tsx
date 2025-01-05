@@ -1,8 +1,8 @@
-export function FormatMoneyUSD(amount: number) {
+export function FormatMoneyUSD(amount: number, noFraction?: boolean) {
   if (isNaN(amount)) {
     return "-";
   }
-  let fractionNumber = 2;
+  let fractionNumber = noFraction ? 0 : 2;
 
   const formattedAmount = Number(amount).toLocaleString("en-US", {
     style: "currency",

@@ -9,11 +9,13 @@ import {
 } from "react-icons/tb";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { BiCategoryAlt, BiHome } from "react-icons/bi";
-import { MdOutlineReceiptLong } from "react-icons/md";
 import { Gastos } from "../gastos/Gastos";
 import { Categorias } from "../categorias/Categorias";
 import { Home } from "../home/Home";
 import { Ingresos } from "../ingresos/Ingresos";
+import { PiTruckDuotone } from "react-icons/pi";
+import { Proveedor } from "../proveedores/Proveedor";
+import { IoReceiptOutline } from "react-icons/io5";
 
 const { Sider, Content } = Layout;
 
@@ -65,7 +67,7 @@ export const Dashboard = () => {
               key: "2",
               label: "Gastos",
               icon: (
-                <MdOutlineReceiptLong
+                <IoReceiptOutline
                   size="25px"
                   style={{ minWidth: "30px", marginLeft: "-8px" }}
                 />
@@ -77,6 +79,20 @@ export const Dashboard = () => {
             },
             {
               key: "3",
+              label: "Ingresos",
+              icon: (
+                <FaRegMoneyBill1
+                  size="25px"
+                  style={{ minWidth: "30px", marginLeft: "-8px" }}
+                />
+              ),
+              style: {
+                display: "flex",
+                alignItems: "center",
+              },
+            },
+            {
+              key: "4",
               label: "Categorias",
               icon: (
                 <BiCategoryAlt
@@ -89,11 +105,12 @@ export const Dashboard = () => {
                 alignItems: "center",
               },
             },
+
             {
-              key: "4",
-              label: "Ingresos",
+              key: "5",
+              label: "Proveedores",
               icon: (
-                <FaRegMoneyBill1
+                <PiTruckDuotone
                   size="25px"
                   style={{ minWidth: "30px", marginLeft: "-8px" }}
                 />
@@ -135,10 +152,16 @@ export const Dashboard = () => {
         >
           {selectedKey === "1" && <Home />}
           {selectedKey === "2" && <Gastos />}
-          {selectedKey === "3" && <Categorias />}
-          {selectedKey === "4" && <Ingresos />}
+          {selectedKey === "3" && <Ingresos />}
+          {selectedKey === "4" && <Categorias />}
+          {selectedKey === "5" && <Proveedor />}
         </Content>
       </Layout>
     </Layout>
   );
+};
+
+export const AdminRoute = {
+  path: "/",
+  element: <Dashboard />,
 };

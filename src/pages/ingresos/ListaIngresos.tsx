@@ -126,9 +126,15 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
 
     {
       title: "Fecha",
-      dataIndex: "fechaEfectuado",
-      key: "fechaEfectuado",
-      render: (text: string) => new Date(text).toLocaleDateString(), // Ajusta el formato de fecha según necesites
+      dataIndex: "fecha",
+      key: "fecha",
+      render: (text: string) => new Date(text).toLocaleDateString(),
+    },
+    {
+      title: "Hora",
+      dataIndex: "hora",
+      key: "hora",
+      render: (text: string) => text?.slice(0, 8),
     },
   ];
 

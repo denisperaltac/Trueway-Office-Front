@@ -2,7 +2,8 @@ export interface GastosType {
   gastoId: number;
   name: string;
   categoriaId: number;
-  fechaEfectuado: string;
+  fecha: string;
+  hora: string;
   monto: number;
   notes?: string;
   pagado?: boolean;

@@ -32,3 +32,8 @@ export const AuthController: React.FC = () => {
     />
   );
 };
+
+export const AuthRoute = {
+  path: "/",
+  element: <AuthController />,
+};

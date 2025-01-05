@@ -2,6 +2,7 @@ import { configureStore, Middleware } from "@reduxjs/toolkit";
 import usersReducer from "./users/slice";
 import userReducer from "./user/slice";
 import categoriasReducer from "./categorias/slice";
+import proveedoresReducer from "./proveedor/slice";
 
 const persistanceLocalStorageMiddleware: Middleware =
   (store) => (next) => (action) => {
@@ -14,6 +15,7 @@ export const store = configureStore({
     users: usersReducer,
     user: userReducer,
     categorias: categoriasReducer,
+    proveedores: proveedoresReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(persistanceLocalStorageMiddleware),

@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
 import { useAppSelector } from "../../hooks/store";
+import TextArea from "antd/es/input/TextArea";
 
 interface FormValues {
   nombreGasto: string;
@@ -33,6 +34,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false); // Estado para el loader
   const categorias: any = useAppSelector((state) => state.categorias);
+  const proveedores: any = useAppSelector((state) => state.proveedores);
 
   const onFinish = (values: FormValues) => {
     setLoading(true); // Mostrar loader
@@ -70,7 +72,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
       <Spin spinning={loading}>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Row gutter={16} wrap={true} justify="start">
-            <Col style={{ minWidth: 200, width: "400px" }}>
+            <Col style={{ minWidth: 200 }}>
               <Form.Item
                 label="Nombre del gasto"
                 name="nombreGasto"
@@ -145,13 +147,38 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
             </Col>
             <Col style={{ minWidth: 200 }}>
               <Form.Item
-                label="Fecha en que se efectuó el pago (opcional)"
-                name="fechaPago"
+                label="Proveedor"
+                name="categoriaGasto"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, seleccione una categoría",
+                  },
+                ]}
               >
+                <Select>
+                  {proveedores.map((categoria: any) => (
+                    <Select.Option
+                      key={categoria.categoriaId}
+                      value={categoria.categoriaId}
+                    >
+                      {categoria.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col style={{ minWidth: 200 }}>
+              <Form.Item label="Fecha (opcional)" name="fechaPago">
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
             </Col>
             <Col style={{ minWidth: 200 }}>
+              <Form.Item label="Notas" name="notas">
+                <TextArea />
+              </Form.Item>
+            </Col>
+            <Col style={{ maxWidth: 100 }}>
               <Form.Item label="Pagado?" name="pagado" valuePropName="checked">
                 <Switch />
               </Form.Item>

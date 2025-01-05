@@ -9,6 +9,7 @@ import {
   Spin,
   InputNumber,
   DatePicker,
+  Input,
 } from "antd";
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
@@ -133,6 +134,21 @@ export const AddIngreso: React.FC<AddIngresoProps> = ({
             <Col style={{ minWidth: 200 }}>
               <Form.Item label="Fecha" name="fecha">
                 <DatePicker style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+            <Col style={{ minWidth: 200 }}>
+              <Form.Item
+                label="Caja ID"
+                name="cajaId"
+                rules={[
+                  {
+                    required: false,
+                    message:
+                      "Por favor, ingrese el identificador (ID) de la caja",
+                  },
+                ]}
+              >
+                <Input />
               </Form.Item>
             </Col>
             <Col

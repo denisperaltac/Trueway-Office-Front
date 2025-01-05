@@ -1,3 +1,9 @@
+import { GastosChart } from "../dashboard/GastosChart";
+
 export const Home = () => {
-  return <div>Home</div>;
+  return (
+    <div>
+      <GastosChart />
+    </div>
+  );
 };

@@ -72,10 +72,6 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
     });
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
     setTableParams({
       pagination,
@@ -134,9 +130,9 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
 
     {
       title: "Fecha",
-      dataIndex: "fechaEfectuado",
-      key: "fechaEfectuado",
-      render: (text: string) => new Date(text).toLocaleDateString(), // Ajusta el formato de fecha según necesites
+      dataIndex: "fecha",
+      key: "fecha",
+      render: (text: string) => new Date(text).toLocaleDateString(),
     },
     {
       title: "Notas",

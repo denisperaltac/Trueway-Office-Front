@@ -25,12 +25,12 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    logIn: (state, action) => {
+    logIn: (_, action) => {
       const User = action.payload;
-      return (state = User);
+      return (User);
     },
-    logOut: (state) => {
-      return (state = { userId: 0, name: "null", userName: "null" });
+    logOut: (_) => {
+      return ({ userId: 0, name: "null", userName: "null" });
     },
   },
 });

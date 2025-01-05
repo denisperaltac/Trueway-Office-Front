@@ -6,14 +6,12 @@ interface AuthProps {
   onSubmit: () => void;
   message: string;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  isLoading: boolean;
   setForm: React.Dispatch<React.SetStateAction<{}>>;
   form: {};
 }
 
 export const Auth: React.FC<AuthProps> = ({
   onSubmit,
-  isLoading,
   message,
   setForm,
   form,

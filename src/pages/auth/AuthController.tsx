@@ -6,7 +6,7 @@ import { useUserActions } from "../../hooks/useUserActions";
 export const AuthController: React.FC = () => {
   const { logInUser } = useUserActions();
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [_, setIsLoading] = useState(false);
   const [form, setForm] = useState({});
 
   const onSubmit = () => {
@@ -26,7 +26,6 @@ export const AuthController: React.FC = () => {
       onSubmit={onSubmit}
       message={message}
       setIsLoading={setIsLoading}
-      isLoading={isLoading}
       setForm={setForm}
       form={form}
     />

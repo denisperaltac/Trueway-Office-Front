@@ -24,9 +24,9 @@ export const proveedoresSlice = createSlice({
   name: "proveedores",
   initialState,
   reducers: {
-    addProveedorSlice: (state, action) => {
+    addProveedorSlice: (_, action) => {
       const Proveedores = action.payload;
-      return (state = Proveedores);
+      return (Proveedores);
     },
   },
 });

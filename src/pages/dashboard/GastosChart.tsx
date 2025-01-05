@@ -12,6 +12,7 @@ import { Bar } from "react-chartjs-2";
 import { BaseUrl } from "../../config/config";
 import axios from "axios";
 import { FormatMoneyUSD } from "../../services/FormatMoney";
+import { Spin } from "antd";
 
 ChartJS.register(
   CategoryScale,
@@ -148,11 +149,10 @@ export function GastosChart() {
     });
   };
 
-  console.log(chartData);
   return (
     <>
       {loading ? (
-        <p>Loading</p>
+        <Spin size="large" />
       ) : chartData ? (
         <div
           style={{

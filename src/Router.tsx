@@ -8,12 +8,13 @@ import axios from "axios";
 import { BaseUrl } from "./config/config";
 import { useCategoriaActions } from "./hooks/useCategoriaActions";
 import { useProveedorActions } from "./hooks/useProveedorActions";
+import { Loading } from "./pages/loading/Loading";
 export const Router = () => {
   const user = useAppSelector((state) => state.user);
   const AdminRoutes = [AdminRoute];
   const AuthRoutes = [AuthRoute];
 
-  const [Routes, setRoutes] = useState(createBrowserRouter(AuthRoutes));
+  const [Routes, setRoutes] = useState<any>();
   const { addCategorias } = useCategoriaActions();
   const { addProveedor } = useProveedorActions();
 
@@ -31,8 +32,10 @@ export const Router = () => {
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
+    } else {
+      setRoutes(createBrowserRouter(AuthRoutes));
     }
   }, [user]);
 
-  return <RouterProvider router={Routes} />;
+  return Routes ? <RouterProvider router={Routes} /> : <Loading />;
 };

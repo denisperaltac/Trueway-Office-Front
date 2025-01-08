@@ -18,10 +18,10 @@ import { useAppSelector } from "../../hooks/store";
 import TextArea from "antd/es/input/TextArea";
 
 interface FormValues {
-  nombreGasto: string;
-  montoGasto: number;
-  categoriaGasto: string;
-  fechaPago?: Date;
+  name: string;
+  monto: number;
+  categoriaId: string;
+  fecha?: Date;
   pagado: boolean;
 }
 
@@ -75,7 +75,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
             <Col style={{ minWidth: 200 }}>
               <Form.Item
                 label="Nombre del gasto"
-                name="nombreGasto"
+                name="name"
                 rules={[
                   {
                     required: true,
@@ -89,7 +89,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
             <Col style={{ minWidth: 200 }}>
               <Form.Item
                 label="Monto del gasto"
-                name="montoGasto"
+                name="monto"
                 rules={[
                   {
                     required: true,
@@ -125,7 +125,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
             <Col style={{ minWidth: 200 }}>
               <Form.Item
                 label="Categoria del gasto"
-                name="categoriaGasto"
+                name="categoriaId"
                 rules={[
                   {
                     required: true,
@@ -148,7 +148,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
             <Col style={{ minWidth: 200 }}>
               <Form.Item
                 label="Proveedor"
-                name="categoriaGasto"
+                name="proveedorId"
                 rules={[
                   {
                     required: true,
@@ -157,19 +157,19 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
                 ]}
               >
                 <Select>
-                  {proveedores.map((categoria: any) => (
+                  {proveedores.map((proveedor: any) => (
                     <Select.Option
-                      key={categoria.categoriaId}
-                      value={categoria.categoriaId}
+                      key={proveedor.proveedorId}
+                      value={proveedor.proveedorId}
                     >
-                      {categoria.name}
+                      {proveedor.name}
                     </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
             <Col style={{ minWidth: 200 }}>
-              <Form.Item label="Fecha (opcional)" name="fechaPago">
+              <Form.Item label="Fecha (opcional)" name="fecha">
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
             </Col>

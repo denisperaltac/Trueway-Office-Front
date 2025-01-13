@@ -39,6 +39,10 @@ export interface TableParams {
 
 export interface ListaGastosProps {
   reloadGastos: number;
+  form: any;
+  setIsEdit: any;
+  setReloadGastos: any;
+  setGastoId: any;
 }
 
 export interface ListaIngresosProps {

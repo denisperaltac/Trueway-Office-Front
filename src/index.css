@@ -9,3 +9,20 @@
 .ant-notification .ant-notification-close-icon {
   display: none;
 }
+
+.iconAction {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  transition: 0.3s;
+}
+.iconAction:hover {
+  scale: 1.2;
+}
+
+.iconPencil {
+  color: #0d2149;
+}
+.iconDelete {
+  color: #dc4c64;
+}

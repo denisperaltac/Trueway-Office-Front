@@ -4,20 +4,31 @@ import axios from "axios";
 import { BaseUrl } from "../../config/config";
 import { useAppSelector } from "../../hooks/store";
 import { FormatMoneyUSD } from "../../services/FormatMoney";
+import { notification } from "antd";
 import {
   GastosType,
-  FormState,
   ListaGastosProps,
   TableParams,
 } from "../../services/interfaces";
 
 import { CategoriaFormat } from "../../services/CategoriaFormat";
+import { FiEdit } from "react-icons/fi";
+import { FaRegTrashAlt } from "react-icons/fa";
+import dayjs from "dayjs";
 
-export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
+export const ListaGastos: React.FC<ListaGastosProps> = ({
+  reloadGastos,
+  form,
+  setIsEdit,
+  setReloadGastos,
+  setGastoId,
+}) => {
+  const [api, contextHolder] = notification.useNotification();
   const [data, setData] = useState<GastosType[]>([]);
+  const [searchParams, _] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const categorias: any = useAppSelector((state) => state.categorias);
-  const [form, _] = useState<FormState>({});
+
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -43,14 +54,14 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
     const baseUrl = `${BaseUrl}getGastos`;
 
     const params = {
-      montoMin: form.montoMin,
-      montoMax: form.montoMax,
-      categoriaId: form.categoriaId,
-      dateFrom: form.dateFrom,
-      dateTo: form.dateTo,
+      montoMin: searchParams.montoMin,
+      montoMax: searchParams.montoMax,
+      categoriaId: searchParams.categoriaId,
+      dateFrom: searchParams.dateFrom,
+      dateTo: searchParams.dateTo,
       size: tableParams.pagination.pageSize,
       page: tableParams.pagination.current,
-      sort: form.sort,
+      sort: searchParams.sort,
     };
 
     const queryString = Object.entries(params)
@@ -83,6 +94,49 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
     if (pagination.pageSize !== tableParams.pagination.pageSize) {
       setData([]);
     }
+  };
+
+  const handleEdit = (gasto: any) => {
+    const updatedGasto = {
+      ...gasto,
+      monto: Number(gasto.monto),
+      fecha: gasto.fecha ? dayjs(gasto.fecha) : undefined, // Convertir la fecha si existe
+    };
+    form.setFieldsValue(updatedGasto);
+
+    setIsEdit(true);
+    setGastoId(gasto.gastoId);
+  };
+
+  const handleDelete = (id: number) => {
+    setLoading(true); // Mostrar loader
+    axios
+      .put(BaseUrl + "deleteGasto", { id })
+      .then(() => {
+        const now = new Date();
+        setReloadGastos(now.getTime());
+        api.open({
+          message: "Gasto Eliminado",
+          type: "success",
+          duration: 5,
+          placement: "top",
+          showProgress: true,
+          pauseOnHover: false,
+        });
+        setIsEdit(false);
+      })
+      .catch(() => {
+        api.open({
+          message: "Error al agregar el gasto",
+          type: "error",
+          duration: 5,
+          placement: "top",
+          showProgress: true,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const columns = [
@@ -132,7 +186,8 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
       title: "Fecha",
       dataIndex: "fecha",
       key: "fecha",
-      render: (text: string) => new Date(text).toLocaleDateString(),
+      render: (text: string) =>
+        text.slice(8, 10) + "/" + text.slice(5, 7) + "/" + text.slice(0, 4),
     },
     {
       title: "Notas",
@@ -145,16 +200,43 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({ reloadGastos }) => {
       key: "pagado",
       render: (text: boolean) => (text ? "Sí" : "No"),
     },
+    {
+      title: "Editar",
+      key: "edit",
+      render: (_: any, record: GastosType) => (
+        <div
+          className="iconAction iconPencil"
+          onClick={() => handleEdit(record)}
+        >
+          <FiEdit size={"20px"} />
+        </div>
+      ),
+    },
+    {
+      title: "Eliminar",
+      key: "delete",
+      render: (_: any, record: GastosType) => (
+        <div
+          onClick={() => handleDelete(record.gastoId)}
+          className="iconAction iconDelete"
+        >
+          <FaRegTrashAlt size={"20px"} />
+        </div>
+      ),
+    },
   ];
 
   return (
-    <Table
-      columns={columns}
-      rowKey="gastoId"
-      dataSource={data}
-      pagination={tableParams.pagination}
-      loading={loading}
-      onChange={handleTableChange}
-    />
+    <>
+      {contextHolder}
+      <Table
+        columns={columns}
+        rowKey="gastoId"
+        dataSource={data}
+        pagination={tableParams.pagination}
+        loading={loading}
+        onChange={handleTableChange}
+      />
+    </>
   );
 };

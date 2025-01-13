@@ -18,6 +18,7 @@ import { useAppSelector } from "../../hooks/store";
 import TextArea from "antd/es/input/TextArea";
 
 interface FormValues {
+  gastoId?: number;
   name: string;
   monto: number;
   categoriaId: string;
@@ -27,30 +28,41 @@ interface FormValues {
 
 interface AddGastoProps {
   setReloadGastos: React.Dispatch<React.SetStateAction<number>>;
+  form: any;
+  isEdit: boolean;
+  setIsEdit: any;
+  gastoId?: number;
 }
 
-export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
-  const [form] = Form.useForm();
+export const AddGasto: React.FC<AddGastoProps> = ({
+  setReloadGastos,
+  form,
+  isEdit,
+  setIsEdit,
+  gastoId,
+}) => {
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false); // Estado para el loader
   const categorias: any = useAppSelector((state) => state.categorias);
   const proveedores: any = useAppSelector((state) => state.proveedores);
 
   const onFinish = (values: FormValues) => {
-    setLoading(true); // Mostrar loader
+    setLoading(true);
     axios
-      .post(BaseUrl + "addGasto", values)
+      .post(BaseUrl + "addGasto", { ...values, gastoId })
       .then(() => {
         const now = new Date();
         setReloadGastos(now.getTime());
         api.open({
-          message: "Gasto Agregado",
+          message: isEdit ? "Gasto Editado" : "Gasto Agregado",
           type: "success",
           duration: 5,
           placement: "top",
           showProgress: true,
           pauseOnHover: false,
         });
+        setIsEdit(false);
+        form.resetFields();
       })
       .catch(() => {
         api.open({
@@ -70,7 +82,19 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
     <>
       {contextHolder}
       <Spin spinning={loading}>
-        <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{
+            gastoId: isEdit ? form.getFieldValue("gastoId") : undefined, // O el valor inicial
+            name: undefined,
+            monto: undefined,
+            categoriaId: undefined,
+            fecha: undefined,
+            pagado: undefined,
+          }}
+        >
           <Row gutter={16} wrap={true} justify="start">
             <Col style={{ minWidth: 200 }}>
               <Form.Item
@@ -146,16 +170,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({ setReloadGastos }) => {
               </Form.Item>
             </Col>
             <Col style={{ minWidth: 200 }}>
-              <Form.Item
-                label="Proveedor"
-                name="proveedorId"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor, seleccione una categoría",
-                  },
-                ]}
-              >
+              <Form.Item label="Proveedor" name="proveedorId">
                 <Select>
                   {proveedores.map((proveedor: any) => (
                     <Select.Option

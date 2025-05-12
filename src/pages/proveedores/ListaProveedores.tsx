@@ -14,6 +14,7 @@ export const ListaProveedores = () => {
 
   return (
     <Table
+      scroll={{ y: "60vh" }}
       columns={columns}
       rowKey="gastoId"
       dataSource={proveedores}

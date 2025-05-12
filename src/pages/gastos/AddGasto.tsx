@@ -9,7 +9,6 @@ import {
   notification,
   Row,
   Select,
-  Switch,
   Spin,
 } from "antd";
 import axios from "axios";
@@ -193,11 +192,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                 <TextArea />
               </Form.Item>
             </Col>
-            <Col style={{ maxWidth: 100 }}>
-              <Form.Item label="Pagado?" name="pagado" valuePropName="checked">
-                <Switch />
-              </Form.Item>
-            </Col>
+
             <Col
               style={{ minWidth: 200, display: "flex", alignItems: "flex-end" }}
             >

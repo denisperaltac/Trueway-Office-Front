@@ -13,7 +13,6 @@ import {
 } from "antd";
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
-import { useCategoriaActions } from "../../hooks/useCategoriaActions";
 import { CategoriaIngresos } from "../../services/Constants";
 
 interface FormValues {
@@ -29,7 +28,6 @@ interface AddIngresoProps {
 export const AddIngreso: React.FC<AddIngresoProps> = ({
   setReloadIngresos,
 }) => {
-  const { addCategorias } = useCategoriaActions();
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false); // Estado para el loader
@@ -37,7 +35,7 @@ export const AddIngreso: React.FC<AddIngresoProps> = ({
   const onFinish = (values: FormValues) => {
     setLoading(true); // Mostrar loader
     axios
-      .post(BaseUrl + "addIngreso", values)
+      .post(BaseUrl + "income/add", values)
       .then(() => {
         const now = new Date();
         setReloadIngresos(now.getTime());
@@ -60,12 +58,7 @@ export const AddIngreso: React.FC<AddIngresoProps> = ({
         });
       })
       .finally(() => {
-        axios
-          .get(BaseUrl + "getIngresos")
-          .then((res) => {
-            addCategorias(res.data.result);
-          })
-          .finally(() => setLoading(false));
+        setLoading(false);
       });
   };
 

@@ -21,8 +21,8 @@ export const Router = () => {
   useEffect(() => {
     if (user.userId > 0) {
       Promise.all([
-        axios.get(BaseUrl + "getCategorias"),
-        axios.get(BaseUrl + "getProveedores"),
+        axios.get(BaseUrl + "categories/get"),
+        axios.get(BaseUrl + "suppliers/get"),
       ])
         .then(([categoriasResponse, proveedoresResponse]) => {
           addCategorias(categoriasResponse.data.result);

@@ -10,12 +10,14 @@ import {
 import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { BiCategoryAlt, BiHome } from "react-icons/bi";
 import { Gastos } from "../gastos/Gastos";
-import { Categorias } from "../categorias/Categorias";
+import { Categories } from "../categorias/Categorias";
 import { Home } from "../home/Home";
 import { Ingresos } from "../ingresos/Ingresos";
 import { PiTruckDuotone } from "react-icons/pi";
 import { Proveedor } from "../proveedores/Proveedor";
 import { IoReceiptOutline } from "react-icons/io5";
+import { BsPeople } from "react-icons/bs";
+import { Empleados } from "../empleados/Empleados";
 
 const { Sider, Content } = Layout;
 
@@ -57,7 +59,6 @@ export const Dashboard = () => {
                   style={{ minWidth: "30px", marginLeft: "-8px" }}
                 />
               ),
-
               style: {
                 display: "flex",
                 alignItems: "center",
@@ -105,12 +106,25 @@ export const Dashboard = () => {
                 alignItems: "center",
               },
             },
-
             {
               key: "5",
               label: "Proveedores",
               icon: (
                 <PiTruckDuotone
+                  size="25px"
+                  style={{ minWidth: "30px", marginLeft: "-8px" }}
+                />
+              ),
+              style: {
+                display: "flex",
+                alignItems: "center",
+              },
+            },
+            {
+              key: "6",
+              label: "Empleados",
+              icon: (
+                <BsPeople
                   size="25px"
                   style={{ minWidth: "30px", marginLeft: "-8px" }}
                 />
@@ -153,8 +167,9 @@ export const Dashboard = () => {
           {selectedKey === "1" && <Home />}
           {selectedKey === "2" && <Gastos />}
           {selectedKey === "3" && <Ingresos />}
-          {selectedKey === "4" && <Categorias />}
+          {selectedKey === "4" && <Categories />}
           {selectedKey === "5" && <Proveedor />}
+          {selectedKey === "6" && <Empleados />}
         </Content>
       </Layout>
     </Layout>

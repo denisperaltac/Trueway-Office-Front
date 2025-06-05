@@ -8,16 +8,20 @@ interface FormValues {
   name: string;
 }
 
-export const AddCategoria = () => {
+interface AddCategoriaProps {
+  onSuccess?: () => void;
+}
+
+export const AddCategoria = ({ onSuccess }: AddCategoriaProps) => {
   const { addCategorias } = useCategoriaActions();
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
-  const [loading, setLoading] = useState(false); // Estado para el loader
+  const [loading, setLoading] = useState(false);
 
   const onFinish = (values: FormValues) => {
-    setLoading(true); // Mostrar loader
+    setLoading(true);
     axios
-      .post(BaseUrl + "addCategoria", values)
+      .post(BaseUrl + "categories/add", values)
       .then(() => {
         api.open({
           message: "Categoria Agregada",
@@ -27,6 +31,8 @@ export const AddCategoria = () => {
           showProgress: true,
           pauseOnHover: false,
         });
+        form.resetFields();
+        onSuccess?.();
       })
       .catch(() => {
         api.open({
@@ -39,7 +45,7 @@ export const AddCategoria = () => {
       })
       .finally(() => {
         axios
-          .get(BaseUrl + "getCategorias")
+          .get(BaseUrl + "categories/get")
           .then((res) => {
             addCategorias(res.data.result);
           })
@@ -52,36 +58,24 @@ export const AddCategoria = () => {
       {contextHolder}
       <Spin spinning={loading}>
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Row gutter={16} wrap={true} justify="start">
-            <Col style={{ minWidth: 200, width: "400px" }}>
-              <Form.Item
-                label="Nombre de la categoria"
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor, ingrese el nombre de la categoria",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
+          <Form.Item
+            label="Nombre de la categoria"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: "Por favor, ingrese el nombre de la categoria",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-            <Col
-              style={{ minWidth: 200, display: "flex", alignItems: "flex-end" }}
-            >
-              <Form.Item style={{ width: "100%" }}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ width: "100%" }}
-                >
-                  Enviar
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+              Agregar
+            </Button>
+          </Form.Item>
         </Form>
       </Spin>
     </>

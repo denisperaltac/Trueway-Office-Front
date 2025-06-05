@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag } from "antd";
+import { notification, Table, Tag } from "antd";
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
 import { FormatMoneyUSD } from "../../services/FormatMoney";
@@ -12,10 +12,14 @@ import {
 
 import { CategoriaIngresos } from "../../services/Constants";
 import { IngresoFormat } from "../../services/IngresoFormat";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 export const ListaIngresos: React.FC<ListaIngresosProps> = ({
   reloadIngresos,
+  setReloadIngresos,
+  setIsEdit,
 }) => {
+  const [api] = notification.useNotification();
   const [data, setData] = useState<IngresoType[]>([]);
   const [loading, setLoading] = useState(false);
   const [form, _] = useState<FormState>({});
@@ -41,7 +45,7 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
 
   const fetchData = () => {
     setLoading(true);
-    const baseUrl = `${BaseUrl}getIngresos`;
+    const baseUrl = `${BaseUrl}income/get`;
 
     const params = {
       montoMin: form.montoMin,
@@ -84,6 +88,37 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
     if (pagination.pageSize !== tableParams.pagination.pageSize) {
       setData([]);
     }
+  };
+
+  const handleDelete = (id: number) => {
+    setLoading(true); // Mostrar loader
+    axios
+      .delete(BaseUrl + "income/delete/" + id)
+      .then(() => {
+        const now = new Date();
+        setReloadIngresos(now.getTime());
+        api.open({
+          message: "Ingreso Eliminado",
+          type: "success",
+          duration: 5,
+          placement: "top",
+          showProgress: true,
+          pauseOnHover: false,
+        });
+        setIsEdit(false);
+      })
+      .catch(() => {
+        api.open({
+          message: "Error al eliminar el ingreso",
+          type: "error",
+          duration: 5,
+          placement: "top",
+          showProgress: true,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const columns = [
@@ -136,12 +171,24 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
       key: "hora",
       render: (text: string) => text?.slice(0, 8),
     },
+    {
+      title: "Eliminar",
+      key: "delete",
+      render: (_: any, record: IngresoType) => (
+        <div
+          onClick={() => handleDelete(record.ingresoId)}
+          className="iconAction iconDelete"
+        >
+          <FaRegTrashAlt size={"20px"} />
+        </div>
+      ),
+    },
   ];
 
   return (
     <Table
       columns={columns}
-      rowKey="gastoId"
+      rowKey="ingresoId"
       dataSource={data}
       pagination={tableParams.pagination}
       loading={loading}

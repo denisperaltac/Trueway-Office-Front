@@ -45,7 +45,7 @@ export const CategoriaFormat = (categoria: { name: string }) => {
       icon = <MdOutlineElectricalServices size={"20px"} />;
       break;
     default:
-      color = "gray";
+      color = "purple";
       icon = <GrStatusUnknown />;
       break;
   }

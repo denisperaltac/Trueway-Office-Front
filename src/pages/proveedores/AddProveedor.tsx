@@ -1,23 +1,47 @@
 import { useState } from "react";
-import { Button, Col, Form, Input, notification, Row, Spin } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  notification,
+  Row,
+  Spin,
+  message,
+} from "antd";
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
 import { useProveedorActions } from "../../hooks/useProveedorActions";
+import { useAppSelector } from "../../hooks/store";
 
 interface FormValues {
   name: string;
+  contact: string;
+  phone: string;
+  email: string;
+  address: string;
 }
 
-export const AddProveedor = () => {
+interface AddProveedorProps {
+  onSuccess: () => void;
+}
+
+export const AddProveedor = ({ onSuccess }: AddProveedorProps) => {
   const { addProveedor } = useProveedorActions();
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false); // Estado para el loader
+  const proveedores: any = useAppSelector((state) => state.proveedores);
 
   const onFinish = (values: FormValues) => {
     setLoading(true); // Mostrar loader
+    const newProveedor = {
+      ...values,
+      proveedorId: proveedores.length + 1,
+    };
+
     axios
-      .post(BaseUrl + "addProveedor", values)
+      .post(BaseUrl + "suppliers/add", newProveedor)
       .then(() => {
         api.open({
           message: "Proveedor Agregado",
@@ -39,11 +63,16 @@ export const AddProveedor = () => {
       })
       .finally(() => {
         axios
-          .get(BaseUrl + "getProveedores")
+          .get(BaseUrl + "suppliers/get")
           .then((res) => {
             addProveedor(res.data.result);
           })
-          .finally(() => setLoading(false));
+          .finally(() => {
+            setLoading(false);
+            message.success("Proveedor agregado exitosamente");
+            form.resetFields();
+            onSuccess();
+          });
       });
   };
 

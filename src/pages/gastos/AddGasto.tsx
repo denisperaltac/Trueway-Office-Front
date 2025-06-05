@@ -48,7 +48,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({
   const onFinish = (values: FormValues) => {
     setLoading(true);
     axios
-      .post(BaseUrl + "addGasto", { ...values, gastoId })
+      .post(BaseUrl + "expenses/add", { ...values, gastoId })
       .then(() => {
         const now = new Date();
         setReloadGastos(now.getTime());

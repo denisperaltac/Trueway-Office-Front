@@ -1,24 +1,54 @@
 import { Table } from "antd";
-import { useAppSelector } from "../../hooks/store";
+import type { ColumnsType } from "antd/es/table";
 
-export const ListaProveedores = () => {
-  const proveedores: any = useAppSelector((state) => state.proveedores);
+interface Proveedor {
+  proveedorId: number;
+  name: string;
+  contact: string;
+  phone: string;
+  email: string;
+  address: string;
+}
 
-  const columns = [
+interface ListaProveedoresProps {
+  proveedores: Proveedor[];
+}
+
+export const ListaProveedores = ({ proveedores }: ListaProveedoresProps) => {
+  const columns: ColumnsType<Proveedor> = [
     {
       title: "Nombre",
       dataIndex: "name",
       key: "name",
     },
+    {
+      title: "Contacto",
+      dataIndex: "contact",
+      key: "contact",
+    },
+    {
+      title: "Teléfono",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Dirección",
+      dataIndex: "address",
+      key: "address",
+    },
   ];
 
   return (
     <Table
-      scroll={{ y: "60vh" }}
       columns={columns}
-      rowKey="gastoId"
       dataSource={proveedores}
-      pagination={false}
+      rowKey="proveedorId"
+      pagination={{ pageSize: 10 }}
     />
   );
 };

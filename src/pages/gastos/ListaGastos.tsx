@@ -51,7 +51,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
 
   const fetchData = () => {
     setLoading(true);
-    const baseUrl = `${BaseUrl}getGastos`;
+    const baseUrl = `${BaseUrl}expenses/get`;
 
     const params = {
       montoMin: searchParams.montoMin,
@@ -111,7 +111,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
   const handleDelete = (id: number) => {
     setLoading(true); // Mostrar loader
     axios
-      .put(BaseUrl + "deleteGasto", { id })
+      .delete(BaseUrl + "expenses/delete/" + id)
       .then(() => {
         const now = new Date();
         setReloadGastos(now.getTime());

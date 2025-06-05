@@ -75,7 +75,7 @@ export function GastosChart() {
 
   const fetchData = () => {
     setLoading(true);
-    const baseUrl = `${BaseUrl}stadisticByDay`;
+    const baseUrl = `${BaseUrl}dashboard/stadisticByDay`;
     const params = {
       year: form.year,
       month: currentMonth + 1, // Enviamos el mes como parámetro (1 - 12)

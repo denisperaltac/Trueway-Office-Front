@@ -14,6 +14,8 @@ import axios from "axios";
 import { BaseUrl } from "../../config/config";
 import { Empleado, FormValues } from "../../types/empleado";
 import { ListaEmpleados } from "./ListaEmpleados";
+import { Area } from "../../store/area/slice";
+import { useAppSelector } from "../../store/hooks";
 
 export const Empleados = () => {
   const [form] = Form.useForm();
@@ -22,12 +24,13 @@ export const Empleados = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [empleados, setEmpleados] = useState<Empleado[]>([]);
+  const areas = useAppSelector((state) => state.area);
 
   const fetchEmpleados = async () => {
     setLoading(true);
     try {
       const res = await axios.get(BaseUrl + "employees");
-      setEmpleados(res.data.employees);
+      setEmpleados(res.data);
     } catch (error) {
       api.open({
         message: "Error al cargar los empleados",
@@ -76,12 +79,12 @@ export const Empleados = () => {
     }
   };
 
-  const filteredEmpleados = empleados.filter(
+  const filteredEmpleados = empleados?.filter(
     (empleado: Empleado) =>
       empleado.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
       empleado.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
       empleado.email.toLowerCase().includes(searchText.toLowerCase()) ||
-      empleado.department.toLowerCase().includes(searchText.toLowerCase()) ||
+      empleado.area?.name.toLowerCase().includes(searchText.toLowerCase()) ||
       empleado.position.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -198,7 +201,7 @@ export const Empleados = () => {
 
               <Form.Item
                 label="Departamento"
-                name="department"
+                name="areaId"
                 rules={[
                   {
                     required: true,
@@ -207,15 +210,11 @@ export const Empleados = () => {
                 ]}
               >
                 <Select>
-                  <Select.Option value="Desarrollador">
-                    Desarrollador
-                  </Select.Option>
-
-                  <Select.Option value="Marketing">Marketing</Select.Option>
-                  <Select.Option value="Oficina">Oficina</Select.Option>
-                  <Select.Option value="Realtor">Realtor</Select.Option>
-                  <Select.Option value="Seguro">Seguro</Select.Option>
-                  <Select.Option value="Call Center">Call Center</Select.Option>
+                  {areas.map((area: Area) => (
+                    <Select.Option key={area.areaId} value={area.areaId}>
+                      {area.name}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
 

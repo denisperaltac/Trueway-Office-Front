@@ -12,7 +12,6 @@ import {
 import axios from "axios";
 import { BaseUrl } from "../../config/config";
 import { useProveedorActions } from "../../hooks/useProveedorActions";
-import { useAppSelector } from "../../hooks/store";
 
 interface FormValues {
   name: string;
@@ -31,27 +30,12 @@ export const AddProveedor = ({ onSuccess }: AddProveedorProps) => {
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false); // Estado para el loader
-  const proveedores: any = useAppSelector((state) => state.proveedores);
 
   const onFinish = (values: FormValues) => {
     setLoading(true); // Mostrar loader
-    const newProveedor = {
-      ...values,
-      proveedorId: proveedores.length + 1,
-    };
 
     axios
-      .post(BaseUrl + "suppliers/add", newProveedor)
-      .then(() => {
-        api.open({
-          message: "Proveedor Agregado",
-          type: "success",
-          duration: 5,
-          placement: "top",
-          showProgress: true,
-          pauseOnHover: false,
-        });
-      })
+      .post(BaseUrl + "suppliers/add", values)
       .catch(() => {
         api.open({
           message: "Error al agregar el proveedor",
@@ -84,7 +68,7 @@ export const AddProveedor = ({ onSuccess }: AddProveedorProps) => {
           <Row gutter={16} wrap={true} justify="start">
             <Col style={{ minWidth: 200, width: "400px" }}>
               <Form.Item
-                label="Nombre del proveedor"
+                label="Nombre"
                 name="name"
                 rules={[
                   {
@@ -93,7 +77,43 @@ export const AddProveedor = ({ onSuccess }: AddProveedorProps) => {
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Requerido" />
+              </Form.Item>
+            </Col>
+            <Col style={{ minWidth: 200, width: "400px" }}>
+              <Form.Item
+                label="Telefono"
+                name="phone"
+                rules={[
+                  { required: false, message: "Por favor ingrese el telefono" },
+                ]}
+              >
+                <Input placeholder="Opcional" />
+              </Form.Item>
+            </Col>
+            <Col style={{ minWidth: 200, width: "400px" }}>
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                  { required: false, message: "Por favor ingrese el email" },
+                ]}
+              >
+                <Input placeholder="Opcional" />
+              </Form.Item>
+            </Col>
+            <Col style={{ minWidth: 200, width: "400px" }}>
+              <Form.Item
+                label="Direccion"
+                name="address"
+                rules={[
+                  {
+                    required: false,
+                    message: "Por favor ingrese la direccion",
+                  },
+                ]}
+              >
+                <Input placeholder="Opcional" />
               </Form.Item>
             </Col>
 

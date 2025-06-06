@@ -2,29 +2,26 @@ import { useState } from "react";
 import { Layout, Menu, MenuProps, theme } from "antd";
 import { useUsersActions } from "../../hooks/useUsersActions";
 import { useUserActions } from "../../hooks/useUserActions";
-import {
-  TbLayoutSidebarLeftCollapse,
-  TbLayoutSidebarRightCollapse,
-  TbLogout,
-} from "react-icons/tb";
+import { TbLogout } from "react-icons/tb";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { BiCategoryAlt, BiHome } from "react-icons/bi";
 import { Gastos } from "../gastos/Gastos";
 import { Categories } from "../categorias/Categorias";
 import { Home } from "../home/Home";
 import { Ingresos } from "../ingresos/Ingresos";
-import { PiTruckDuotone } from "react-icons/pi";
+import { PiMapPinAreaBold, PiTruckDuotone } from "react-icons/pi";
 import { Proveedor } from "../proveedores/Proveedor";
 import { IoReceiptOutline } from "react-icons/io5";
 import { BsPeople } from "react-icons/bs";
 import { Empleados } from "../empleados/Empleados";
+import LogoOffice2 from "../../assets/LogoOffice2.png";
+import { Areas } from "../areas/Areas";
 
 const { Sider, Content } = Layout;
 
 export const Dashboard = () => {
   const { removeUser } = useUsersActions();
   const { logOutUser } = useUserActions();
-  const [collapsed, setCollapsed] = useState(true);
   const [selectedKey, setSelectedKey] = useState("1");
 
   const handleMenuClick: MenuProps["onClick"] = (e) => {
@@ -35,9 +32,30 @@ export const Dashboard = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const getContent = () => {
+    switch (selectedKey) {
+      case "1":
+        return <Home />;
+      case "2":
+        return <Gastos />;
+      case "3":
+        return <Ingresos />;
+      case "4":
+        return <Categories />;
+      case "5":
+        return <Proveedor />;
+      case "6":
+        return <Empleados />;
+      case "7":
+        return <Areas />;
+      default:
+        return <Home />;
+    }
+  };
+
   return (
     <Layout className="containerApp">
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsed={true}>
         <div className="demo-logo-vertical" />
         <Menu
           theme="light"
@@ -50,6 +68,25 @@ export const Dashboard = () => {
             flexDirection: "column",
           }}
           items={[
+            {
+              key: "0",
+              icon: (
+                <img
+                  src={LogoOffice2}
+                  alt="Logo"
+                  className="h-8"
+                  style={{ minWidth: "65px", marginRight: "-20px" }}
+                />
+              ),
+              style: {
+                pointerEvents: "none",
+                display: "flex",
+                margin: "5px 0px",
+                alignItems: "center",
+                justifyContent: "center",
+                maxWidth: "100%",
+              },
+            },
             {
               key: "1",
               label: "Home",
@@ -134,26 +171,26 @@ export const Dashboard = () => {
                 alignItems: "center",
               },
             },
+            {
+              key: "7",
+              label: "Areas",
+              icon: (
+                <PiMapPinAreaBold
+                  size="25px"
+                  style={{ minWidth: "30px", marginLeft: "-8px" }}
+                />
+              ),
+              style: {
+                display: "flex",
+                alignItems: "center",
+              },
+            },
           ]}
         />
       </Sider>
 
       <Layout>
-        <div className="flex justify-between items-center min-h-3 p-3">
-          {collapsed ? (
-            <TbLayoutSidebarRightCollapse
-              size="30px"
-              className="scaleIcon"
-              onClick={() => setCollapsed(!collapsed)}
-            />
-          ) : (
-            <TbLayoutSidebarLeftCollapse
-              size="30px"
-              className="scaleIcon"
-              onClick={() => setCollapsed(!collapsed)}
-            />
-          )}
-
+        <div className="flex justify-end items-center min-h-3 p-3">
           <TbLogout size="30px" className="scaleIcon" onClick={logOutUser} />
         </div>
 
@@ -164,12 +201,7 @@ export const Dashboard = () => {
           }}
           onClick={() => removeUser(1)}
         >
-          {selectedKey === "1" && <Home />}
-          {selectedKey === "2" && <Gastos />}
-          {selectedKey === "3" && <Ingresos />}
-          {selectedKey === "4" && <Categories />}
-          {selectedKey === "5" && <Proveedor />}
-          {selectedKey === "6" && <Empleados />}
+          {getContent()}
         </Content>
       </Layout>
     </Layout>

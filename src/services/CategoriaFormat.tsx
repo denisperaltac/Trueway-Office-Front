@@ -1,10 +1,8 @@
-import { BsPeople } from "react-icons/bs";
-import { CiShop } from "react-icons/ci";
+import { BsPlug } from "react-icons/bs";
+import { FaMoneyBill } from "react-icons/fa6";
 import { GrStatusUnknown } from "react-icons/gr";
-import { LuApple } from "react-icons/lu";
-import { MdOutlineElectricalServices } from "react-icons/md";
-import { PiBreadDuotone, PiCheese, PiHamburgerDuotone } from "react-icons/pi";
-import { TbPig } from "react-icons/tb";
+import { MdEvent, MdOutlineShoppingCart } from "react-icons/md";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 
 export const CategoriaFormat = (categoria: { name: string }) => {
   // Define los íconos y colores basados en el tipo de categoría
@@ -12,37 +10,31 @@ export const CategoriaFormat = (categoria: { name: string }) => {
   let icon = <GrStatusUnknown />; // Ícono predeterminado
 
   switch (categoria.name) {
-    case "Almacén":
-      color = "cyan";
-      icon = <CiShop size={"20px"} />;
-      break;
-    case "Panificación":
-      color = "gold";
-      icon = <PiBreadDuotone size={"20px"} />;
-      break;
-    case "Fiambreria":
-      color = "magenta";
-      icon = <TbPig size={"20px"} />;
-      break;
-    case "Lácteos":
-      color = "orange";
-      icon = <PiCheese size={"22px"} />;
-      break;
-    case "Verduleria":
-      color = "green";
-      icon = <LuApple size={"20px"} />;
-      break;
-    case "Carniceria":
-      color = "red";
-      icon = <PiHamburgerDuotone size={"20px"} />;
-      break;
-    case "Empleados":
+    case "Salarios":
       color = "geekblue";
-      icon = <BsPeople size={"20px"} />;
+      icon = <FaMoneyBill size={"20px"} />;
+      break;
+    case "Insumos":
+      color = "cyan";
+      icon = <MdOutlineShoppingCart size={"20px"} />;
+
+      break;
+    case "Alquileres":
+      color = "gold";
+      icon = <HiOutlineBuildingOffice2 size={"20px"} />;
       break;
     case "Servicios":
+      color = "magenta";
+      icon = <BsPlug size={"20px"} />;
+
+      break;
+    case "Eventos":
+      color = "green";
+      icon = <MdEvent size={"20px"} />;
+      break;
+    case "Otros":
       color = "purple";
-      icon = <MdOutlineElectricalServices size={"20px"} />;
+      icon = <GrStatusUnknown />;
       break;
     default:
       color = "purple";

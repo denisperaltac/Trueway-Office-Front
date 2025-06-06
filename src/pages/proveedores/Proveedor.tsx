@@ -52,7 +52,7 @@ export const Proveedor = () => {
       </Row>
 
       <Modal
-        title="Agregar Nuevo Proveedor"
+        title="Agregar un nuevo proveedor"
         open={isModalOpen}
         onCancel={handleCloseModal}
         footer={null}

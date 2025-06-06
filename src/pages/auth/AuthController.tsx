@@ -12,12 +12,14 @@ export const AuthController: React.FC = () => {
   const onSubmit = () => {
     setIsLoading(true);
     axios
-      .post(`${BaseUrl}login`, form)
+      .post(`${BaseUrl}auth/login`, form)
       .then((response) => {
         logInUser(response.data);
-        setMessage("hola");
       })
-      .catch((err) => console.log("Error log in" + err))
+      .catch((err) => {
+        setMessage("Usuario o contraseña incorrectos");
+        console.log("Error log in" + err);
+      })
       .finally(() => setIsLoading(false));
   };
 

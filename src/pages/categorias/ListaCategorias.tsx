@@ -107,7 +107,7 @@ export const ListaCategorias = ({ categorias }: ListaCategoriasProps) => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "36px",
+              width: "40px",
               fontSize: "16px",
               height: "30px",
             }}

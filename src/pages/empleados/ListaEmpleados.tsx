@@ -278,7 +278,17 @@ export const ListaEmpleados = ({
                   },
                 ]}
               >
-                <Input />
+                <Select>
+                  <Select.Option value="Desarrollador">
+                    Desarrollador
+                  </Select.Option>
+
+                  <Select.Option value="Marketing">Marketing</Select.Option>
+                  <Select.Option value="Oficina">Oficina</Select.Option>
+                  <Select.Option value="Realtor">Realtor</Select.Option>
+                  <Select.Option value="Seguro">Seguro</Select.Option>
+                  <Select.Option value="Call Center">Call Center</Select.Option>
+                </Select>
               </Form.Item>
 
               <Form.Item

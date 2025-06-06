@@ -1,6 +1,6 @@
 import "antd/dist/reset.css";
 import { createRoot } from "react-dom/client";
-import "./index.css";
+import "./styles/main.css";
 import { ConfigProvider } from "antd";
 import { store } from "./store";
 import { Provider } from "react-redux";

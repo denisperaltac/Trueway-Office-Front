@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface Usuario {
   name: string;
-  userName: string;
+  email: string;
 }
 
 export interface UsuarioConId extends Usuario {
@@ -21,7 +21,7 @@ const initialState: UsuarioConId[] = (() => {
       console.error("Failed to parse state from localStorage", e);
     }
   }
-  return [{ id: 1, name: "Denis", userName: "Peluca" }];
+  return [{ id: 1, name: "Denis", email: "Peluca" }];
 })();
 
 export const usersSlice = createSlice({

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface User {
   userId: number;
   name: string;
-  userName: string;
+  email: string;
 }
 
 const initialState: User = (() => {
@@ -18,7 +18,7 @@ const initialState: User = (() => {
       console.error("Failed to parse state from localStorage", e);
     }
   }
-  return { userId: 0, name: "null", userName: "null" };
+  return { userId: 0, name: "null", email: "null" };
 })();
 
 export const userSlice = createSlice({
@@ -27,10 +27,10 @@ export const userSlice = createSlice({
   reducers: {
     logIn: (_, action) => {
       const User = action.payload;
-      return (User);
+      return User;
     },
     logOut: (_) => {
-      return ({ userId: 0, name: "null", userName: "null" });
+      return { userId: 0, name: "null", email: "null" };
     },
   },
 });

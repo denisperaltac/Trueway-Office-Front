@@ -16,6 +16,8 @@ import { BsPeople } from "react-icons/bs";
 import { Empleados } from "../empleados/Empleados";
 import LogoOffice2 from "../../assets/LogoOffice2.png";
 import { Areas } from "../areas/Areas";
+import { Usuarios } from "../usuarios/Usuarios";
+import { FaUsers } from "react-icons/fa";
 
 const { Sider, Content } = Layout;
 
@@ -48,6 +50,8 @@ export const Dashboard = () => {
         return <Empleados />;
       case "7":
         return <Areas />;
+      case "8":
+        return <Usuarios />;
       default:
         return <Home />;
     }
@@ -176,6 +180,20 @@ export const Dashboard = () => {
               label: "Areas",
               icon: (
                 <PiMapPinAreaBold
+                  size="25px"
+                  style={{ minWidth: "30px", marginLeft: "-8px" }}
+                />
+              ),
+              style: {
+                display: "flex",
+                alignItems: "center",
+              },
+            },
+            {
+              key: "8",
+              label: "Usuarios",
+              icon: (
+                <FaUsers
                   size="25px"
                   style={{ minWidth: "30px", marginLeft: "-8px" }}
                 />

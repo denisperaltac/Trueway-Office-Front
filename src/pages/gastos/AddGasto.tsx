@@ -10,7 +10,6 @@ import {
   Row,
   Select,
   Spin,
-  Card,
   Divider,
 } from "antd";
 import axiosInstance from "../../config/axios";

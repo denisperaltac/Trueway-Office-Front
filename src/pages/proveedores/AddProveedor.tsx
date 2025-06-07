@@ -9,8 +9,7 @@ import {
   Spin,
   message,
 } from "antd";
-import axios from "axios";
-import { BaseUrl } from "../../config/config";
+import axiosInstance from "../../config/axios";
 import { useProveedorActions } from "../../hooks/useProveedorActions";
 
 interface FormValues {
@@ -34,8 +33,8 @@ export const AddProveedor = ({ onSuccess }: AddProveedorProps) => {
   const onFinish = (values: FormValues) => {
     setLoading(true); // Mostrar loader
 
-    axios
-      .post(BaseUrl + "suppliers/add", values)
+    axiosInstance
+      .post("suppliers/add", values)
       .catch(() => {
         api.open({
           message: "Error al agregar el proveedor",
@@ -46,8 +45,8 @@ export const AddProveedor = ({ onSuccess }: AddProveedorProps) => {
         });
       })
       .finally(() => {
-        axios
-          .get(BaseUrl + "suppliers/get")
+        axiosInstance
+          .get("suppliers/get")
           .then((res) => {
             addProveedor(res.data.result);
           })

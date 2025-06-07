@@ -10,8 +10,7 @@ import {
   Select,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import axios from "axios";
-import { BaseUrl } from "../../config/config";
+import axiosInstance from "../../config/axios";
 import { Empleado, FormValues } from "../../types/empleado";
 import { ListaEmpleados } from "./ListaEmpleados";
 import { Area } from "../../store/area/slice";
@@ -29,7 +28,7 @@ export const Empleados = () => {
   const fetchEmpleados = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(BaseUrl + "employees");
+      const res = await axiosInstance.get("employees");
       setEmpleados(res.data);
     } catch (error) {
       api.open({
@@ -56,7 +55,7 @@ export const Empleados = () => {
   const onFinish = async (values: FormValues) => {
     setLoading(true);
     try {
-      await axios.post(BaseUrl + "employees", values);
+      await axiosInstance.post("employees", values);
       api.open({
         message: "Empleado Agregado",
         type: "success",

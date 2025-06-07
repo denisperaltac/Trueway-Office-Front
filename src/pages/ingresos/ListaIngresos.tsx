@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { notification, Table, Tag } from "antd";
-import axios from "axios";
-import { BaseUrl } from "../../config/config";
+import axiosInstance from "../../config/axios";
 import { FormatMoneyUSD } from "../../services/FormatMoney";
 import {
   IngresoType,
@@ -45,7 +44,7 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
 
   const fetchData = () => {
     setLoading(true);
-    const baseUrl = `${BaseUrl}income/get`;
+    const baseUrl = `income/get`;
 
     const params = {
       montoMin: form.montoMin,
@@ -64,7 +63,7 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
       .join("&");
 
     const url = `${baseUrl}?${queryString}`;
-    axios.get(url).then((res) => {
+    axiosInstance.get(url).then((res) => {
       setData(res.data.result);
       setLoading(false);
       setTableParams({
@@ -92,8 +91,8 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
 
   const handleDelete = (id: number) => {
     setLoading(true); // Mostrar loader
-    axios
-      .delete(BaseUrl + "income/delete/" + id)
+    axiosInstance
+      .delete("income/delete/" + id)
       .then(() => {
         const now = new Date();
         setReloadIngresos(now.getTime());

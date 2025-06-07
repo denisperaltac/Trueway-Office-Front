@@ -108,7 +108,13 @@ export const Auth: React.FC<AuthProps> = ({
   return (
     <section className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <div className="w-full max-w-md">
-        {isLoading ? <Spin tip="Cargando...">{formSection}</Spin> : formSection}
+        {isLoading ? (
+          <Spin tip="Cargando..." size="large">
+            {formSection}
+          </Spin>
+        ) : (
+          formSection
+        )}
       </div>
     </section>
   );

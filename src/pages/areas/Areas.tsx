@@ -12,8 +12,7 @@ import {
 import { useAppSelector } from "../../hooks/store";
 import { useAreaActions } from "../../hooks/useAreaActions";
 import { Area } from "../../store/area/slice";
-import { BaseUrl } from "../../config/config";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { AreaFormat } from "../../services/AreaFormat";
 
@@ -50,14 +49,14 @@ export const Areas: React.FC = () => {
       setLoading(true);
 
       if (editingArea) {
-        const response = await axios.put(
-          `${BaseUrl}areas/${editingArea.areaId}`,
+        const response = await axiosInstance.put(
+          `areas/${editingArea.areaId}`,
           values
         );
         updateArea(response.data);
         message.success("Area actualizada correctamente");
       } else {
-        const response = await axios.post(`${BaseUrl}areas/add`, values);
+        const response = await axiosInstance.post(`areas/add`, values);
         addArea(response.data);
         message.success("Area creada correctamente");
       }
@@ -74,7 +73,7 @@ export const Areas: React.FC = () => {
 
   const handleDelete = async (areaId: number) => {
     try {
-      await axios.delete(`${BaseUrl}areas/${areaId}`);
+      await axiosInstance.delete(`areas/${areaId}`);
       deleteArea(areaId);
       message.success("Area eliminada correctamente");
     } catch (error) {

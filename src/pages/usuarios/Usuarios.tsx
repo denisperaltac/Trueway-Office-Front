@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Usuario } from "../../types/usuario";
+import { Usuario, UsuarioFormData } from "../../types/usuario";
 import { usuarioService } from "../../services/usuarioService";
 import { UsuarioForm } from "./components/UsuarioForm";
 import { UsuarioList } from "./components/UsuarioList";
@@ -26,11 +26,9 @@ export const Usuarios = () => {
     cargarUsuarios();
   }, []);
 
-  const handleCrearUsuario = async (
-    usuario: Omit<Usuario, "id" | "fechaCreacion" | "ultimoAcceso">
-  ) => {
+  const handleCrearUsuario = async (usuario: Omit<Usuario, "userId">) => {
     try {
-      await usuarioService.crearUsuario(usuario);
+      await usuarioService.crearUsuario(usuario as UsuarioFormData);
       await cargarUsuarios();
       setMostrarFormulario(false);
     } catch (error) {
@@ -40,10 +38,10 @@ export const Usuarios = () => {
 
   const handleActualizarUsuario = async (
     id: number,
-    usuario: Omit<Usuario, "id" | "fechaCreacion" | "ultimoAcceso">
+    usuario: Omit<Usuario, "userId">
   ) => {
     try {
-      await usuarioService.actualizarUsuario(id, usuario);
+      await usuarioService.actualizarUsuario(id, usuario as UsuarioFormData);
       await cargarUsuarios();
       setUsuarioSeleccionado(null);
       setMostrarFormulario(false);
@@ -91,7 +89,8 @@ export const Usuarios = () => {
           usuario={usuarioSeleccionado}
           onSubmit={
             usuarioSeleccionado
-              ? (data) => handleActualizarUsuario(usuarioSeleccionado.id, data)
+              ? (data) =>
+                  handleActualizarUsuario(usuarioSeleccionado.userId, data)
               : handleCrearUsuario
           }
           onCancel={() => {

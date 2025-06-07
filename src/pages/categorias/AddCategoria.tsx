@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button, Col, Form, Input, notification, Row, Spin } from "antd";
-import axios from "axios";
-import { BaseUrl } from "../../config/config";
+import axiosInstance from "../../config/axios";
 import { useCategoriaActions } from "../../hooks/useCategoriaActions";
 
 interface FormValues {
@@ -20,8 +19,8 @@ export const AddCategoria = ({ onSuccess }: AddCategoriaProps) => {
 
   const onFinish = (values: FormValues) => {
     setLoading(true);
-    axios
-      .post(BaseUrl + "categories/add", values)
+    axiosInstance
+      .post("categories/add", values)
       .then(() => {
         api.open({
           message: "Categoria Agregada",
@@ -44,8 +43,8 @@ export const AddCategoria = ({ onSuccess }: AddCategoriaProps) => {
         });
       })
       .finally(() => {
-        axios
-          .get(BaseUrl + "categories/get")
+        axiosInstance
+          .get("categories/get")
           .then((res) => {
             addCategorias(res.data.result);
           })

@@ -1,19 +1,20 @@
 export interface Usuario {
-  id: number;
-  nombre: string;
-  apellido: string;
+  userId: number;
+  name: string;
   email: string;
+  phone: string;
   rol: "admin" | "usuario";
   activo: boolean;
-  fechaCreacion: string;
-  ultimoAcceso?: string;
+  password: string;
+  deleted: boolean;
 }
 
 export interface UsuarioFormData {
-  nombre: string;
-  apellido: string;
+  name: string;
   email: string;
-  password?: string;
+  phone: string;
   rol: "admin" | "usuario";
   activo: boolean;
+  password: string;
+  deleted: boolean;
 }

@@ -4,6 +4,7 @@ export interface User {
   userId: number;
   name: string;
   email: string;
+  rol: string;
 }
 
 const initialState: User = (() => {
@@ -18,7 +19,7 @@ const initialState: User = (() => {
       console.error("Failed to parse state from localStorage", e);
     }
   }
-  return { userId: 0, name: "null", email: "null" };
+  return { userId: 0, name: "null", email: "null", rol: "null" };
 })();
 
 export const userSlice = createSlice({
@@ -30,7 +31,7 @@ export const userSlice = createSlice({
       return User;
     },
     logOut: (_) => {
-      return { userId: 0, name: "null", email: "null" };
+      return { userId: 0, name: "null", email: "null", rol: "null" };
     },
   },
 });

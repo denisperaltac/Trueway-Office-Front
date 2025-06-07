@@ -3,12 +3,11 @@ import { AdminRoute } from "./pages/dashboard/Dashboard";
 import { useAppSelector } from "./hooks/store";
 import { AuthRoute } from "./pages/auth/AuthController";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { BaseUrl } from "./config/config";
 import { useCategoriaActions } from "./hooks/useCategoriaActions";
 import { useProveedorActions } from "./hooks/useProveedorActions";
 import { Loading } from "./pages/loading/Loading";
 import { useAreaActions } from "./hooks/useAreaActions";
+import axiosInstance from "./config/axios";
 export const Router = () => {
   const user = useAppSelector((state) => state.user);
   const AdminRoutes = [AdminRoute];
@@ -22,9 +21,9 @@ export const Router = () => {
   useEffect(() => {
     if (user.userId > 0) {
       Promise.all([
-        axios.get(BaseUrl + "categories/get"),
-        axios.get(BaseUrl + "suppliers/get"),
-        axios.get(BaseUrl + "areas/get"),
+        axiosInstance.get("categories/get"),
+        axiosInstance.get("suppliers/get"),
+        axiosInstance.get("areas/get"),
       ])
         .then(([categoriasResponse, proveedoresResponse, areasResponse]) => {
           addCategorias(categoriasResponse.data.result);

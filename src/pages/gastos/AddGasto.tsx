@@ -10,9 +10,10 @@ import {
   Row,
   Select,
   Spin,
+  Card,
+  Divider,
 } from "antd";
-import axios from "axios";
-import { BaseUrl } from "../../config/config";
+import axiosInstance from "../../config/axios";
 import { useAppSelector } from "../../hooks/store";
 import TextArea from "antd/es/input/TextArea";
 
@@ -21,8 +22,11 @@ interface FormValues {
   name: string;
   monto: number;
   categoriaId: string;
+  areaId: string;
   fecha?: Date;
   pagado: boolean;
+  proveedorId?: string;
+  notas?: string;
 }
 
 interface AddGastoProps {
@@ -41,14 +45,15 @@ export const AddGasto: React.FC<AddGastoProps> = ({
   gastoId,
 }) => {
   const [api, contextHolder] = notification.useNotification();
-  const [loading, setLoading] = useState(false); // Estado para el loader
+  const [loading, setLoading] = useState(false);
   const categorias: any = useAppSelector((state) => state.categorias);
   const proveedores: any = useAppSelector((state) => state.proveedores);
+  const areas: any = useAppSelector((state) => state.area);
 
   const onFinish = (values: FormValues) => {
     setLoading(true);
-    axios
-      .post(BaseUrl + "expenses/add", { ...values, gastoId })
+    axiosInstance
+      .post("expenses/add", { ...values, gastoId })
       .then(() => {
         const now = new Date();
         setReloadGastos(now.getTime());
@@ -81,21 +86,27 @@ export const AddGasto: React.FC<AddGastoProps> = ({
     <>
       {contextHolder}
       <Spin spinning={loading}>
+        <div className="text-2xl font-bold mb-4">
+          {isEdit ? "Editar Gasto" : "Agregar Nuevo Gasto"}
+        </div>
         <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
           initialValues={{
-            gastoId: isEdit ? form.getFieldValue("gastoId") : undefined, // O el valor inicial
+            gastoId: isEdit ? form.getFieldValue("gastoId") : undefined,
             name: undefined,
             monto: undefined,
             categoriaId: undefined,
+            areaId: undefined,
             fecha: undefined,
             pagado: undefined,
+            proveedorId: undefined,
+            notas: undefined,
           }}
         >
-          <Row gutter={16} wrap={true} justify="start">
-            <Col style={{ minWidth: 200 }}>
+          <Row gutter={[24, 16]} wrap={true}>
+            <Col xs={24} sm={12} md={8}>
               <Form.Item
                 label="Nombre del gasto"
                 name="name"
@@ -106,10 +117,11 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Ej: Compra de materiales" />
               </Form.Item>
             </Col>
-            <Col style={{ minWidth: 200 }}>
+
+            <Col xs={24} sm={12} md={8}>
               <Form.Item
                 label="Monto del gasto"
                 name="monto"
@@ -126,14 +138,12 @@ export const AddGasto: React.FC<AddGastoProps> = ({
               >
                 <InputNumber
                   style={{ width: "100%" }}
-                  formatter={
-                    (value) =>
-                      `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") // Formato de moneda
+                  formatter={(value) =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                   }
                   step={0.01}
                   onKeyDown={(e) => {
                     const key = e.key;
-                    // Permite solo números, Backspace, Tab, Enter y las teclas de flecha
                     if (
                       !/[\d.\b\tEnter]/.test(key) ||
                       ["e", "E", "R", "r", "T", "t", "N", "n"].includes(key)
@@ -142,12 +152,14 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                     }
                   }}
                   min={0}
+                  placeholder="0.00"
                 />
               </Form.Item>
             </Col>
-            <Col style={{ minWidth: 200 }}>
+
+            <Col xs={24} sm={12} md={8}>
               <Form.Item
-                label="Categoria del gasto"
+                label="Categoría"
                 name="categoriaId"
                 rules={[
                   {
@@ -156,7 +168,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                   },
                 ]}
               >
-                <Select>
+                <Select placeholder="Seleccione una categoría">
                   {categorias.map((categoria: any) => (
                     <Select.Option
                       key={categoria.categoriaId}
@@ -168,9 +180,31 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                 </Select>
               </Form.Item>
             </Col>
-            <Col style={{ minWidth: 200 }}>
+
+            <Col xs={24} sm={12} md={8}>
+              <Form.Item
+                label="Área"
+                name="areaId"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, seleccione un área",
+                  },
+                ]}
+              >
+                <Select placeholder="Seleccione un área">
+                  {areas.map((area: any) => (
+                    <Select.Option key={area.areaId} value={area.areaId}>
+                      {area.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+
+            <Col xs={24} sm={12} md={8}>
               <Form.Item label="Proveedor" name="proveedorId">
-                <Select>
+                <Select placeholder="Seleccione un proveedor (opcional)">
                   {proveedores.map((proveedor: any) => (
                     <Select.Option
                       key={proveedor.proveedorId}
@@ -182,27 +216,40 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                 </Select>
               </Form.Item>
             </Col>
-            <Col style={{ minWidth: 200 }}>
-              <Form.Item label="Fecha (opcional)" name="fecha">
-                <DatePicker style={{ width: "100%" }} />
-              </Form.Item>
-            </Col>
-            <Col style={{ minWidth: 200 }}>
-              <Form.Item label="Notas" name="notas">
-                <TextArea />
+
+            <Col xs={24} sm={12} md={8}>
+              <Form.Item label="Fecha" name="fecha">
+                <DatePicker
+                  style={{ width: "100%" }}
+                  placeholder="Seleccione fecha (opcional)"
+                />
               </Form.Item>
             </Col>
 
-            <Col
-              style={{ minWidth: 200, display: "flex", alignItems: "flex-end" }}
-            >
-              <Form.Item style={{ width: "100%" }}>
+            <Col xs={24}>
+              <Form.Item label="Notas" name="notas">
+                <TextArea
+                  rows={4}
+                  placeholder="Agregue notas adicionales sobre el gasto..."
+                />
+              </Form.Item>
+            </Col>
+
+            <Col xs={24}>
+              <Divider />
+              <Form.Item>
                 <Button
                   type="primary"
                   htmlType="submit"
-                  style={{ width: "100%" }}
+                  size="large"
+                  style={{
+                    width: "100%",
+                    height: "45px",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                  }}
                 >
-                  Enviar
+                  {isEdit ? "Actualizar Gasto" : "Agregar Gasto"}
                 </Button>
               </Form.Item>
             </Col>

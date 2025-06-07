@@ -11,8 +11,7 @@ import {
 import { EditOutlined } from "@ant-design/icons";
 import { CategoriaFormat } from "../../services/CategoriaFormat";
 import { useState } from "react";
-import axios from "axios";
-import { BaseUrl } from "../../config/config";
+import axiosInstance from "../../config/axios";
 import { useCategoriaActions } from "../../hooks/useCategoriaActions";
 import { Categorias } from "../../store/categorias/slice";
 import type { ColumnsType } from "antd/es/table";
@@ -51,8 +50,8 @@ export const ListaCategorias = ({ categorias }: ListaCategoriasProps) => {
     if (!editingCategory) return;
 
     setLoading(true);
-    axios
-      .put(`${BaseUrl}categories/update/${editingCategory.categoriaId}`, values)
+    axiosInstance
+      .put(`categories/update/${editingCategory.categoriaId}`, values)
       .then(() => {
         api.open({
           message: "Categoría Actualizada",
@@ -73,8 +72,8 @@ export const ListaCategorias = ({ categorias }: ListaCategoriasProps) => {
         });
       })
       .finally(() => {
-        axios
-          .get(BaseUrl + "categories/get")
+        axiosInstance
+          .get("categories/get")
           .then((res) => {
             addCategorias(res.data.result);
           })

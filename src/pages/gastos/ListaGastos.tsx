@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
-import axios from "axios";
-import { BaseUrl } from "../../config/config";
+import axiosInstance from "../../config/axios";
 import { useAppSelector } from "../../hooks/store";
 import { FormatMoneyUSD } from "../../services/FormatMoney";
 import { notification } from "antd";
@@ -51,7 +50,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
 
   const fetchData = () => {
     setLoading(true);
-    const baseUrl = `${BaseUrl}expenses/get`;
+    const baseUrl = `expenses/get`;
 
     const params = {
       montoMin: searchParams.montoMin,
@@ -70,7 +69,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
       .join("&");
 
     const url = `${baseUrl}?${queryString}`;
-    axios.get(url).then((res) => {
+    axiosInstance.get(url).then((res) => {
       setData(res.data.result);
       setLoading(false);
       setTableParams({
@@ -110,8 +109,8 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
 
   const handleDelete = (id: number) => {
     setLoading(true); // Mostrar loader
-    axios
-      .delete(BaseUrl + "expenses/delete/" + id)
+    axiosInstance
+      .delete("expenses/delete/" + id)
       .then(() => {
         const now = new Date();
         setReloadGastos(now.getTime());

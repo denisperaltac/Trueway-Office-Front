@@ -10,7 +10,7 @@ import {
   InputNumber,
   DatePicker,
 } from "antd";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { BaseUrl } from "../../config/config";
 import { CategoriaIngresos } from "../../services/Constants";
 
@@ -33,8 +33,8 @@ export const AddIngreso: React.FC<AddIngresoProps> = ({
 
   const onFinish = (values: FormValues) => {
     setLoading(true); // Mostrar loader
-    axios
-      .post(BaseUrl + "income/add", values)
+    axiosInstance
+      .post("income/add", values)
       .then(() => {
         const now = new Date();
         setReloadIngresos(now.getTime());

@@ -4,6 +4,7 @@ import userReducer from "./user/slice";
 import categoriasReducer from "./categorias/slice";
 import proveedoresReducer from "./proveedor/slice";
 import areaReducer from "./area/slice";
+import authReducer from "./auth/slice";
 
 const persistanceLocalStorageMiddleware: Middleware =
   (store) => (next) => (action) => {
@@ -18,6 +19,7 @@ export const store = configureStore({
     categorias: categoriasReducer,
     proveedores: proveedoresReducer,
     area: areaReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(persistanceLocalStorageMiddleware),

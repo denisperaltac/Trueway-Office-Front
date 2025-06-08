@@ -73,11 +73,15 @@ export const Areas: React.FC = () => {
 
   const handleDelete = async (areaId: number) => {
     try {
+      setLoading(true);
       await axiosInstance.delete(`areas/${areaId}`);
       deleteArea(areaId);
       message.success("Area eliminada correctamente");
     } catch (error) {
+      console.error("Error deleting area:", error);
       message.error("Error al eliminar la area");
+    } finally {
+      setLoading(false);
     }
   };
 

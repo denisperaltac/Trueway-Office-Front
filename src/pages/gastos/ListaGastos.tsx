@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag } from "antd";
+import { Table, Tag, Button, message, Popconfirm } from "antd";
 import axiosInstance from "../../config/axios";
 import { useAppSelector } from "../../hooks/store";
 import { FormatMoneyUSD } from "../../services/FormatMoney";
-import { notification } from "antd";
-import {
-  GastosType,
-  ListaGastosProps,
-  TableParams,
-} from "../../services/interfaces";
-
+import { GastosType, TableParams } from "../../services/interfaces";
 import { CategoriaFormat } from "../../services/CategoriaFormat";
-import { FiEdit } from "react-icons/fi";
-import { FaRegTrashAlt } from "react-icons/fa";
-import dayjs from "dayjs";
+import { FaEdit, FaTrash } from "react-icons/fa";
+
+interface ListaGastosProps {
+  reloadGastos: number;
+  setReloadGastos: React.Dispatch<React.SetStateAction<number>>;
+  onEdit: (data: any) => void;
+}
 
 export const ListaGastos: React.FC<ListaGastosProps> = ({
   reloadGastos,
-  form,
-  setIsEdit,
   setReloadGastos,
-  setGastoId,
+  onEdit,
 }) => {
-  const [api, contextHolder] = notification.useNotification();
   const [data, setData] = useState<GastosType[]>([]);
   const [searchParams, _] = useState<any>({});
   const [loading, setLoading] = useState(false);
@@ -48,7 +43,7 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
     fetchData();
   }, reloadParams);
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setLoading(true);
     const baseUrl = `expenses/get`;
 
@@ -69,9 +64,9 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
       .join("&");
 
     const url = `${baseUrl}?${queryString}`;
-    axiosInstance.get(url).then((res) => {
+    try {
+      const res = await axiosInstance.get(url);
       setData(res.data.result);
-      setLoading(false);
       setTableParams({
         ...tableParams,
         pagination: {
@@ -79,7 +74,12 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
           total: res.data.count,
         },
       });
-    });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      message.error("Error al cargar los gastos");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
@@ -95,47 +95,19 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
     }
   };
 
-  const handleEdit = (gasto: any) => {
-    const updatedGasto = {
-      ...gasto,
-      monto: Number(gasto.monto),
-      fecha: gasto.fecha ? dayjs(gasto.fecha) : undefined, // Convertir la fecha si existe
-    };
-    form.setFieldsValue(updatedGasto);
-
-    setIsEdit(true);
-    setGastoId(gasto.gastoId);
-  };
-
-  const handleDelete = (id: number) => {
-    setLoading(true); // Mostrar loader
-    axiosInstance
-      .delete("expenses/delete/" + id)
-      .then(() => {
-        const now = new Date();
-        setReloadGastos(now.getTime());
-        api.open({
-          message: "Gasto Eliminado",
-          type: "success",
-          duration: 5,
-          placement: "top",
-          showProgress: true,
-          pauseOnHover: false,
-        });
-        setIsEdit(false);
-      })
-      .catch(() => {
-        api.open({
-          message: "Error al agregar el gasto",
-          type: "error",
-          duration: 5,
-          placement: "top",
-          showProgress: true,
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const handleDelete = async (id: number) => {
+    try {
+      setLoading(true);
+      await axiosInstance.delete(`expenses/delete/${id}`);
+      const now = new Date();
+      setReloadGastos(now.getTime());
+      message.success("Gasto eliminado correctamente");
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      message.error("Error al eliminar el gasto");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const columns = [
@@ -180,62 +152,52 @@ export const ListaGastos: React.FC<ListaGastosProps> = ({
         );
       },
     },
-
     {
       title: "Fecha",
       dataIndex: "fecha",
       key: "fecha",
       render: (text: string) =>
-        text.slice(8, 10) + "/" + text.slice(5, 7) + "/" + text.slice(0, 4),
+        text
+          ? text.slice(8, 10) + "/" + text.slice(5, 7) + "/" + text.slice(0, 4)
+          : "N/A",
     },
     {
       title: "Notas",
-      dataIndex: "notes",
-      key: "notes",
+      dataIndex: "notas",
+      key: "notas",
     },
     {
-      title: "Pagado",
-      dataIndex: "pagado",
-      key: "pagado",
-      render: (text: boolean) => (text ? "Sí" : "No"),
-    },
-    {
-      title: "Editar",
-      key: "edit",
+      title: "Acciones",
+      key: "actions",
       render: (_: any, record: GastosType) => (
-        <div
-          className="iconAction iconPencil"
-          onClick={() => handleEdit(record)}
-        >
-          <FiEdit size={"20px"} />
-        </div>
-      ),
-    },
-    {
-      title: "Eliminar",
-      key: "delete",
-      render: (_: any, record: GastosType) => (
-        <div
-          onClick={() => handleDelete(record.gastoId)}
-          className="iconAction iconDelete"
-        >
-          <FaRegTrashAlt size={"20px"} />
+        <div className="flex gap-2">
+          <Button
+            type="text"
+            icon={<FaEdit className="text-blue-600" />}
+            onClick={() => onEdit(record)}
+          />
+          <Popconfirm
+            title="Eliminar gasto"
+            description="¿Estás seguro de querer eliminar este gasto?"
+            onConfirm={() => handleDelete(record.gastoId)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="text" icon={<FaTrash className="text-red-600" />} />
+          </Popconfirm>
         </div>
       ),
     },
   ];
 
   return (
-    <>
-      {contextHolder}
-      <Table
-        columns={columns}
-        rowKey="gastoId"
-        dataSource={data}
-        pagination={tableParams.pagination}
-        loading={loading}
-        onChange={handleTableChange}
-      />
-    </>
+    <Table
+      columns={columns}
+      rowKey="gastoId"
+      dataSource={data}
+      pagination={tableParams.pagination}
+      loading={loading}
+      onChange={handleTableChange}
+    />
   );
 };

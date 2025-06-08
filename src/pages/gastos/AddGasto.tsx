@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Col,
@@ -11,10 +11,12 @@ import {
   Select,
   Spin,
   Divider,
+  message,
 } from "antd";
 import axiosInstance from "../../config/axios";
 import { useAppSelector } from "../../hooks/store";
 import TextArea from "antd/es/input/TextArea";
+import dayjs from "dayjs";
 
 interface FormValues {
   gastoId?: number;
@@ -34,6 +36,8 @@ interface AddGastoProps {
   isEdit: boolean;
   setIsEdit: any;
   gastoId?: number;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  formData: any;
 }
 
 export const AddGasto: React.FC<AddGastoProps> = ({
@@ -42,39 +46,53 @@ export const AddGasto: React.FC<AddGastoProps> = ({
   isEdit,
   setIsEdit,
   gastoId,
+  setIsModalOpen,
+  formData,
 }) => {
-  const [api, contextHolder] = notification.useNotification();
+  const [_, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const categorias: any = useAppSelector((state) => state.categorias);
   const proveedores: any = useAppSelector((state) => state.proveedores);
   const areas: any = useAppSelector((state) => state.area);
 
+  useEffect(() => {
+    if (isEdit && formData) {
+      form.resetFields();
+      form.setFieldsValue(formData);
+    }
+  }, [isEdit, formData, form]);
+
   const onFinish = (values: FormValues) => {
     setLoading(true);
+    const data = {
+      ...values,
+      gastoId: isEdit ? gastoId : undefined,
+      fecha: values.fecha
+        ? dayjs(values.fecha).format("YYYY-MM-DD")
+        : undefined,
+    };
+
+    console.log("Datos a enviar:", data); // Debug log
+
     axiosInstance
-      .post("expenses/add", { ...values, gastoId })
+      .post("expenses/add", data)
       .then(() => {
         const now = new Date();
         setReloadGastos(now.getTime());
-        api.open({
-          message: isEdit ? "Gasto Editado" : "Gasto Agregado",
-          type: "success",
-          duration: 5,
-          placement: "top",
-          showProgress: true,
-          pauseOnHover: false,
-        });
+        message.success(
+          isEdit
+            ? "Gasto actualizado correctamente"
+            : "Gasto agregado correctamente"
+        );
         setIsEdit(false);
         form.resetFields();
+        setIsModalOpen(false);
       })
-      .catch(() => {
-        api.open({
-          message: "Error al agregar el gasto",
-          type: "error",
-          duration: 5,
-          placement: "top",
-          showProgress: true,
-        });
+      .catch((error) => {
+        console.error("Error al guardar:", error); // Debug log
+        message.error(
+          isEdit ? "Error al actualizar el gasto" : "Error al agregar el gasto"
+        );
       })
       .finally(() => {
         setLoading(false);
@@ -92,17 +110,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={{
-            gastoId: isEdit ? form.getFieldValue("gastoId") : undefined,
-            name: undefined,
-            monto: undefined,
-            categoriaId: undefined,
-            areaId: undefined,
-            fecha: undefined,
-            pagado: undefined,
-            proveedorId: undefined,
-            notas: undefined,
-          }}
+          preserve={false}
         >
           <Row gutter={[24, 16]} wrap={true}>
             <Col xs={24} sm={12} md={8}>
@@ -171,7 +179,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                   {categorias.map((categoria: any) => (
                     <Select.Option
                       key={categoria.categoriaId}
-                      value={categoria.categoriaId}
+                      value={categoria.categoriaId.toString()}
                     >
                       {categoria.name}
                     </Select.Option>
@@ -192,11 +200,16 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                 ]}
               >
                 <Select placeholder="Seleccione un área">
-                  {areas.map((area: any) => (
-                    <Select.Option key={area.areaId} value={area.areaId}>
-                      {area.name}
-                    </Select.Option>
-                  ))}
+                  {areas
+                    .filter((area: any) => !area.deleted)
+                    .map((area: any) => (
+                      <Select.Option
+                        key={area.areaId}
+                        value={area.areaId.toString()}
+                      >
+                        {area.name}
+                      </Select.Option>
+                    ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -207,7 +220,7 @@ export const AddGasto: React.FC<AddGastoProps> = ({
                   {proveedores.map((proveedor: any) => (
                     <Select.Option
                       key={proveedor.proveedorId}
-                      value={proveedor.proveedorId}
+                      value={proveedor.proveedorId.toString()}
                     >
                       {proveedor.name}
                     </Select.Option>

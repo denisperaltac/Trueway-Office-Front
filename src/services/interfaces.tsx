@@ -43,6 +43,7 @@ export interface ListaGastosProps {
   setIsEdit: any;
   setReloadGastos: any;
   setGastoId: any;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface ListaIngresosProps {

@@ -209,11 +209,13 @@ export const Empleados = () => {
                 ]}
               >
                 <Select>
-                  {areas.map((area: Area) => (
-                    <Select.Option key={area.areaId} value={area.areaId}>
-                      {area.name}
-                    </Select.Option>
-                  ))}
+                  {areas
+                    .filter((area) => !area.deleted)
+                    .map((area: Area) => (
+                      <Select.Option key={area.areaId} value={area.areaId}>
+                        {area.name}
+                      </Select.Option>
+                    ))}
                 </Select>
               </Form.Item>
 

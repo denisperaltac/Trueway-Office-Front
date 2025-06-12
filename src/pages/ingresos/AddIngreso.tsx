@@ -11,7 +11,6 @@ import {
   DatePicker,
 } from "antd";
 import axiosInstance from "../../config/axios";
-import { BaseUrl } from "../../config/config";
 import { CategoriaIngresos } from "../../services/Constants";
 
 interface FormValues {

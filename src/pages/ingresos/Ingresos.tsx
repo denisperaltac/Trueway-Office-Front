@@ -5,7 +5,6 @@ import { Button, Modal } from "antd";
 
 export const Ingresos = () => {
   const [reloadIngresos, setReloadIngresos] = useState<number>(1);
-  const [isEdit, setIsEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div>
@@ -27,7 +26,6 @@ export const Ingresos = () => {
       <ListaIngresos
         reloadIngresos={reloadIngresos}
         setReloadIngresos={setReloadIngresos}
-        setIsEdit={setIsEdit}
       />
     </div>
   );

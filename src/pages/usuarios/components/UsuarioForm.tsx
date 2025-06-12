@@ -3,7 +3,7 @@ import { Usuario, UsuarioFormData } from "../../../types/usuario";
 
 interface UsuarioFormProps {
   usuario: Usuario | null;
-  onSubmit: (data: UsuarioFormData) => void;
+  onSubmit: any;
   onCancel: () => void;
 }
 
@@ -13,9 +13,9 @@ export const UsuarioForm = ({
   onCancel,
 }: UsuarioFormProps) => {
   const [formData, setFormData] = useState<UsuarioFormData>({
-    nombre: "",
-    apellido: "",
+    name: "",
     email: "",
+    phone: "",
     password: "",
     rol: "usuario",
     activo: true,
@@ -24,8 +24,8 @@ export const UsuarioForm = ({
   useEffect(() => {
     if (usuario) {
       setFormData({
-        nombre: usuario.nombre,
-        apellido: usuario.apellido,
+        ...formData,
+        name: usuario.name,
         email: usuario.email,
         rol: usuario.rol,
         activo: usuario.activo,
@@ -61,26 +61,12 @@ export const UsuarioForm = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Nombre
+            Nombre completo
           </label>
           <input
             type="text"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Apellido
-          </label>
-          <input
-            type="text"
-            name="apellido"
-            value={formData.apellido}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             required
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -95,6 +81,19 @@ export const UsuarioForm = ({
             type="email"
             name="email"
             value={formData.email}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Phone
+          </label>
+          <input
+            type="phone"
+            name="phone"
+            value={formData.phone}
             onChange={handleChange}
             required
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"

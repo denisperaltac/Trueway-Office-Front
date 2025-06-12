@@ -22,9 +22,6 @@ ChartJS.register(
   Legend
 );
 
-const year = new Date().getFullYear();
-const currentMonth = new Date().getMonth(); // Mes actual (0 - 11)
-
 export const options = {
   responsive: true,
   plugins: {

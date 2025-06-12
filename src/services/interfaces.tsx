@@ -49,5 +49,4 @@ export interface ListaGastosProps {
 export interface ListaIngresosProps {
   reloadIngresos: number;
   setReloadIngresos: any;
-  setIsEdit: any;
 }

@@ -36,10 +36,7 @@ export const Usuarios = () => {
     }
   };
 
-  const handleActualizarUsuario = async (
-    id: number,
-    usuario: Omit<Usuario, "userId">
-  ) => {
+  const handleActualizarUsuario = async (id: number, usuario: any) => {
     try {
       await usuarioService.actualizarUsuario(id, usuario as UsuarioFormData);
       await cargarUsuarios();
@@ -89,7 +86,7 @@ export const Usuarios = () => {
           usuario={usuarioSeleccionado}
           onSubmit={
             usuarioSeleccionado
-              ? (data) =>
+              ? (data: any) =>
                   handleActualizarUsuario(usuarioSeleccionado.userId, data)
               : handleCrearUsuario
           }

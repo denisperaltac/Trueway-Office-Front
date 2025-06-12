@@ -16,5 +16,5 @@ export interface UsuarioFormData {
   rol: "admin" | "usuario";
   activo: boolean;
   password: string;
-  deleted: boolean;
+  deleted?: boolean;
 }

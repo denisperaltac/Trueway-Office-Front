@@ -16,7 +16,6 @@ import { FaRegTrashAlt } from "react-icons/fa";
 export const ListaIngresos: React.FC<ListaIngresosProps> = ({
   reloadIngresos,
   setReloadIngresos,
-  setIsEdit,
 }) => {
   const [api] = notification.useNotification();
   const [data, setData] = useState<IngresoType[]>([]);
@@ -104,7 +103,6 @@ export const ListaIngresos: React.FC<ListaIngresosProps> = ({
           showProgress: true,
           pauseOnHover: false,
         });
-        setIsEdit(false);
       })
       .catch(() => {
         api.open({
